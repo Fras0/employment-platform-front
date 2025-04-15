@@ -39,7 +39,7 @@ type AuthContextType = {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<any>;
   signup: (data: SignupData) => Promise<void>;
   logout: () => Promise<void>;
 };
@@ -74,8 +74,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const response = await axios.get<LoginResponse>(
             `${API_URL}/users/me`
           );
-          setUser(response.data.data);
-          console.log(user);
+          const responseUser = response.data.data;
+          console.log(response.data);
+          setUser({
+            id: responseUser.id,
+            name:
+              responseUser.employer?.name || responseUser.employee?.name || "",
+            email: responseUser.email || "",
+            nationalId: responseUser.employee?.nationalId || "",
+            city: responseUser.employee?.city || "",
+            bio: responseUser.employee?.bio || "",
+            experienceLevel: responseUser.employee?.experienceLevel || "",
+            companyName: responseUser.employer?.companyName || "",
+            role: responseUser.role || "",
+          });
         }
       } catch (error) {
         console.error("Auth check error:", error);
@@ -103,8 +115,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem("accessToken", accessToken);
       axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
 
-      setUser(data.user);
-      return data.user;
+      // console.log(data.user.employer?.name);
+      const userData = {
+        id: data.user.id,
+        name: data.user.employer?.name || data.user.employee?.name || "",
+        email: data.user.email || "",
+        nationalId: data.user.employee?.nationalId || "",
+        city: data.user.employee?.city || "",
+        bio: data.user.employee?.bio || "",
+        experienceLevel: data.user.employee?.experienceLevel || "",
+        companyName: data.user.employer?.name || "",
+        role: data.user.role || "",
+      };
+      // setUser(data.user);
+      setUser(userData);
+      return userData;
     } catch (error) {
       toast({
         variant: "destructive",

@@ -44,7 +44,7 @@ export default function ProfilePage() {
     companyName: "",
   });
 
-  const [isUpdating, setIsUpdating] = useState(false);
+  // const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -77,7 +77,7 @@ export default function ProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsUpdating(true);
+    // setIsUpdating(true);
 
     try {
       // This would be an API call to update the user profile
@@ -95,7 +95,7 @@ export default function ProfilePage() {
         description: "There was an error updating your profile",
       });
     } finally {
-      setIsUpdating(false);
+      // setIsUpdating(false);
     }
   };
 
@@ -119,7 +119,7 @@ export default function ProfilePage() {
       <Tabs defaultValue="info">
         <TabsList className="mb-6">
           <TabsTrigger value="info">Personal Information</TabsTrigger>
-          <TabsTrigger value="security">Security</TabsTrigger>
+          {/* <TabsTrigger value="security">Security</TabsTrigger> */}
           {user.role === "employee" && (
             <TabsTrigger value="skills">Skills & Experience</TabsTrigger>
           )}
@@ -141,9 +141,6 @@ export default function ProfilePage() {
                     value={formData.email}
                     disabled
                   />
-                  <p className="text-sm text-muted-foreground">
-                    Your email cannot be changed
-                  </p>
                 </div>
 
                 <div className="space-y-2">
@@ -152,7 +149,8 @@ export default function ProfilePage() {
                     id="name"
                     name="name"
                     value={formData.name}
-                    onChange={handleChange}
+                    // onChange={handleChange}
+                    disabled
                   />
                 </div>
 
@@ -166,6 +164,7 @@ export default function ProfilePage() {
                           name="nationalId"
                           value={formData.nationalId}
                           onChange={handleChange}
+                          disabled
                         />
                       </div>
                       <div className="space-y-2">
@@ -175,6 +174,7 @@ export default function ProfilePage() {
                           name="city"
                           value={formData.city}
                           onChange={handleChange}
+                          disabled
                         />
                       </div>
                     </div>
@@ -189,42 +189,17 @@ export default function ProfilePage() {
                       name="companyName"
                       value={formData.companyName}
                       onChange={handleChange}
+                      disabled
                     />
                   </div>
                 )}
               </CardContent>
               <CardFooter>
-                <Button type="submit" disabled={isUpdating}>
+                {/* <Button type="submit" disabled={isUpdating}>
                   {isUpdating ? "Saving..." : "Save Changes"}
-                </Button>
+                </Button> */}
               </CardFooter>
             </form>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="security">
-          <Card>
-            <CardHeader>
-              <CardTitle>Security</CardTitle>
-              <CardDescription>Update your password</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="currentPassword">Current Password</Label>
-                <Input id="currentPassword" type="password" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="newPassword">New Password</Label>
-                <Input id="newPassword" type="password" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                <Input id="confirmPassword" type="password" />
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button>Update Password</Button>
-            </CardFooter>
           </Card>
         </TabsContent>
 
@@ -272,9 +247,9 @@ export default function ProfilePage() {
                     <Label>Programming Languages & Skills</Label>
                     <SkillsInput
                       initialSkills={["JavaScript", "React"]}
-                      onChange={(skills) =>
-                        console.log("Skills updated:", skills)
-                      }
+                      // onChange={(skills) =>
+                      //   console.log("Skills updated:", skills)
+                      // }
                     />
                     <p className="text-sm text-muted-foreground">
                       Add the programming languages and technologies you're

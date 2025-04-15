@@ -87,7 +87,6 @@ export default function DashboardPage() {
           const recommendedJobsResponse = await axios.get(
             `${process.env.NEXT_PUBLIC_API_URL}/jobs/employee/recommendations`
           );
-          console.log(recommendedJobsResponse);
           setRecommendedJobs(recommendedJobsResponse.data.data || []);
         } else if (user.role === "employer") {
           // Fetch employer's job postings
@@ -95,7 +94,6 @@ export default function DashboardPage() {
             `${process.env.NEXT_PUBLIC_API_URL}/jobs/employer`
           );
           setJobs(jobsResponse.data.data || []);
-          console.log(jobsResponse);
         }
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
