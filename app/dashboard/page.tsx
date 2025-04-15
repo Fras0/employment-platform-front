@@ -33,9 +33,12 @@ export default function DashboardPage() {
   const [jobs, setJobs] = useState<any[]>([]);
   const [recommendedJobs, setRecommendedJobs] = useState<any[]>([]);
   const [candidates, setCandidates] = useState<any[]>([]);
+  const [candidatesLength, setCandidatesLength] = useState(0);
+  const [employerApplicants, setEmployerApplicants] = useState<any[]>([]);
   const [profileViews, setProfileViews] = useState(0);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [isLoadingCandidates, setIsLoadingCandidates] = useState(false);
+  const [activeTab, setActiveTab] = useState("overview");
 
   // Candidate search and filter state
   const [candidateFilters, setCandidateFilters] = useState({
@@ -94,6 +97,17 @@ export default function DashboardPage() {
             `${process.env.NEXT_PUBLIC_API_URL}/jobs/employer`
           );
           setJobs(jobsResponse.data.data || []);
+
+          const employerApplicantsResponse = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_URL}/applications/employer`
+          );
+          setEmployerApplicants(employerApplicantsResponse.data.data || []);
+
+          const allCandidates = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_URL}/users/candidates`
+          );
+
+          setCandidatesLength(allCandidates.data.data.length || 0);
         }
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
@@ -115,6 +129,12 @@ export default function DashboardPage() {
       fetchDashboardData();
     }
   }, [user]);
+
+  useEffect(() => {
+    if (activeTab === "candidates") {
+      fetchCandidates();
+    }
+  }, [activeTab]);
 
   // Fetch candidates when filters change or tab is selected
   const fetchCandidates = async () => {
@@ -157,34 +177,7 @@ export default function DashboardPage() {
     } catch (error) {
       console.error("Error fetching candidates:", error);
       // Mock data if API fails
-      setCandidates([
-        {
-          id: "1",
-          name: "John Doe",
-          email: "john@example.com",
-          city: "New York",
-          experienceLevel: "senior",
-          bio: "Full stack developer with 5 years of experience",
-          languages: [
-            { id: 1, name: "JavaScript" },
-            { id: 2, name: "React" },
-            { id: 3, name: "Node.js" },
-          ],
-        },
-        {
-          id: "2",
-          name: "Jane Smith",
-          email: "jane@example.com",
-          city: "San Francisco",
-          experienceLevel: "mid",
-          bio: "Frontend developer specializing in React",
-          languages: [
-            { id: 1, name: "JavaScript" },
-            { id: 2, name: "React" },
-            { id: 4, name: "CSS" },
-          ],
-        },
-      ]);
+      setCandidates([]);
     } finally {
       setIsLoadingCandidates(false);
     }
@@ -237,7 +230,11 @@ export default function DashboardPage() {
         Welcome, {user.name || user.email}
       </h1>
 
-      <Tabs defaultValue="overview">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        defaultValue="overview"
+      >
         <TabsList className="mb-6">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           {user.role === "employee" && (
@@ -270,7 +267,15 @@ export default function DashboardPage() {
                   Total profile views
                 </p>
                 <Button variant="outline" className="mt-4 w-full" asChild>
-                  <Link href="/profile">View Profile</Link>
+                  <Link
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault(); // prevents navigation
+                      setActiveTab("profile"); // switches the tab
+                    }}
+                  >
+                    View Profile
+                  </Link>
                 </Button>
               </CardContent>
             </Card>
@@ -333,7 +338,15 @@ export default function DashboardPage() {
                       Active listings
                     </p>
                     <Button variant="outline" className="mt-4 w-full" asChild>
-                      <Link href="/dashboard?tab=postings">Manage Jobs</Link>
+                      <Link
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault(); // prevents navigation
+                          setActiveTab("postings"); // switches the tab
+                        }}
+                      >
+                        Manage Jobs
+                      </Link>
                     </Button>
                   </CardContent>
                 </Card>
@@ -346,17 +359,45 @@ export default function DashboardPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-3xl font-bold">
-                      {jobs.reduce(
-                        (total, job) => total + (job.applicationsCount || 0),
-                        0
-                      )}
+                      {employerApplicants.length || 0}
                     </div>
                     <p className="text-sm text-muted-foreground">
                       Total applications
                     </p>
                     <Button variant="outline" className="mt-4 w-full" asChild>
-                      <Link href="/dashboard?tab=candidates">
-                        View Candidates
+                      <Link
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault(); // prevents navigation
+                          setActiveTab("postings"); // switches the tab
+                        }}
+                      >
+                        View applicants
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Employees</CardTitle>
+                    <CardDescription>Developers you can browse</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold">
+                      {candidatesLength || 0}
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Total employees
+                    </p>
+                    <Button variant="outline" className="mt-4 w-full" asChild>
+                      <Link
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setActiveTab("candidates");
+                        }}
+                      >
+                        Browse employees
                       </Link>
                     </Button>
                   </CardContent>
@@ -808,9 +849,6 @@ export default function DashboardPage() {
                     </p>
                   </div>
                 )}
-                <Button className="mt-4" asChild>
-                  <Link href="/profile">Edit Profile</Link>
-                </Button>
               </div>
             </CardContent>
           </Card>

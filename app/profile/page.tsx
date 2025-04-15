@@ -248,7 +248,7 @@ export default function ProfilePage() {
                     <SkillsInput
                       initialSkills={["JavaScript", "React"]}
                       // onChange={(skills) =>
-                      //   console.log("Skills updated:", skills)
+
                       // }
                     />
                     <p className="text-sm text-muted-foreground">

@@ -75,7 +75,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             `${API_URL}/users/me`
           );
           const responseUser = response.data.data;
-          console.log(response.data);
           setUser({
             id: responseUser.id,
             name:
@@ -115,7 +114,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem("accessToken", accessToken);
       axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
 
-      // console.log(data.user.employer?.name);
       const userData = {
         id: data.user.id,
         name: data.user.employer?.name || data.user.employee?.name || "",
