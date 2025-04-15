@@ -40,17 +40,47 @@ export default function DashboardPage() {
   const [isLoadingCandidates, setIsLoadingCandidates] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
 
+  const [programmingLanguages, setProgrammingLanguages] = useState<any[]>([]);
+  const [isLoadingLanguages, setIsLoadingLanguages] = useState(true);
+
   // Candidate search and filter state
   const [candidateFilters, setCandidateFilters] = useState({
+    experienceLevel: "",
     bio: "",
     city: "",
     languageNames: "",
   });
   const [candidatePagination, setCandidatePagination] = useState({
     page: 1,
-    limit: 10,
+    limit: 3,
     total: 0,
   });
+
+  const handleFilterChange = (key: string, value: string) => {
+    setCandidateFilters({ ...candidateFilters, [key]: value });
+    setCandidatePagination({ ...candidatePagination, page: 1 }); // Reset to first page when filters change
+  };
+
+  // Fetch programming languages
+  useEffect(() => {
+    const fetchProgrammingLanguages = async () => {
+      try {
+        setIsLoadingLanguages(true);
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/programming-languages`
+        );
+        setProgrammingLanguages(response.data.data || []);
+      } catch (error) {
+        console.error("Error fetching programming languages:", error);
+        // Fallback languages if API fails
+        setProgrammingLanguages([]);
+      } finally {
+        setIsLoadingLanguages(false);
+      }
+    };
+
+    fetchProgrammingLanguages();
+  }, []);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -134,7 +164,7 @@ export default function DashboardPage() {
     if (activeTab === "candidates") {
       fetchCandidates();
     }
-  }, [activeTab]);
+  }, [activeTab, candidatePagination.page, candidateFilters]);
 
   // Fetch candidates when filters change or tab is selected
   const fetchCandidates = async () => {
@@ -149,15 +179,26 @@ export default function DashboardPage() {
         limit: candidatePagination.limit.toString(),
       });
 
-      if (candidateFilters.city) {
+      console.log(`${params}`);
+
+      if (
+        candidateFilters.experienceLevel &&
+        candidateFilters.experienceLevel !== "any"
+      ) {
+        params.append("experienceLevel", candidateFilters.experienceLevel);
+      }
+
+      if (candidateFilters.city && candidateFilters.city !== "any") {
         params.append("city", candidateFilters.city);
       }
 
-      if (candidateFilters.languageNames) {
+      if (
+        candidateFilters.languageNames &&
+        candidateFilters.languageNames !== "any"
+      ) {
         params.append("languageNames", candidateFilters.languageNames);
       }
-
-      if (candidateFilters.bio) {
+      if (candidateFilters.bio && candidateFilters.bio !== "any") {
         params.append("bio", candidateFilters.bio);
       }
 
@@ -187,20 +228,6 @@ export default function DashboardPage() {
   const handleCandidateFilterChange = (key: string, value: string) => {
     setCandidateFilters({ ...candidateFilters, [key]: value });
     setCandidatePagination({ ...candidatePagination, page: 1 }); // Reset to first page when filters change
-  };
-
-  // Format date to relative time
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffTime = Math.abs(now.getTime() - date.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays === 0) return "Today";
-    if (diffDays === 1) return "Yesterday";
-    if (diffDays < 7) return `${diffDays} days ago`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-    return `${Math.floor(diffDays / 30)} months ago`;
   };
 
   // Calculate total pages for candidates pagination
@@ -634,41 +661,89 @@ export default function DashboardPage() {
               <CardContent>
                 <div className="space-y-6">
                   {/* Search and filter section */}
-                  <div className="grid gap-4 md:grid-cols-3">
-                    <div className="md:col-span-2">
-                      <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                        <Input
-                          placeholder="Search by bio or skills..."
-                          className="pl-10"
-                          value={candidateFilters.bio}
-                          onChange={(e) =>
-                            handleCandidateFilterChange("bio", e.target.value)
-                          }
-                        />
-                      </div>
-                    </div>
-                    <Select
-                      value={candidateFilters.city}
-                      onValueChange={(value) =>
-                        handleCandidateFilterChange("city", value)
+
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                    <Input
+                      placeholder="Search by bio or skills..."
+                      className="pl-10"
+                      value={candidateFilters.bio}
+                      onChange={(e) =>
+                        handleFilterChange("bio", e.target.value)
                       }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Filter by city" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Cities</SelectItem>
-                        <SelectItem value="New York">New York</SelectItem>
-                        <SelectItem value="San Francisco">
-                          San Francisco
-                        </SelectItem>
-                        <SelectItem value="Austin">Austin</SelectItem>
-                        <SelectItem value="Seattle">Seattle</SelectItem>
-                        <SelectItem value="giza">Giza</SelectItem>
-                        <SelectItem value="cairo">Cairo</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">
+                        Experience Level
+                      </label>
+                      <Select
+                        value={candidateFilters.experienceLevel}
+                        onValueChange={(value) =>
+                          handleFilterChange("experienceLevel", value)
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Any Level" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="any">Any Level</SelectItem>
+                          <SelectItem value="junior">Junior</SelectItem>
+                          <SelectItem value="mid">Mid-Level</SelectItem>
+                          <SelectItem value="senior">Senior</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">City</label>
+                      <Select
+                        value={candidateFilters.city}
+                        onValueChange={(value) =>
+                          handleFilterChange("city", value)
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Any location" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="any">Any Location</SelectItem>
+                          <SelectItem value="mansoura">Mansoura</SelectItem>
+                          <SelectItem value="cairo">Cairo</SelectItem>
+                          <SelectItem value="giza">Giza</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">
+                        Programming Language
+                      </label>
+                      <Select
+                        value={candidateFilters.languageNames}
+                        onValueChange={(value) =>
+                          handleFilterChange("languageNames", value)
+                        }
+                        disabled={isLoadingLanguages}
+                      >
+                        <SelectTrigger>
+                          <SelectValue
+                            placeholder={
+                              isLoadingLanguages ? "Loading..." : "Any Language"
+                            }
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="any">Any Language</SelectItem>
+                          {programmingLanguages.map((language) => (
+                            <SelectItem key={language.id} value={language.name}>
+                              {language.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
 
                   <div className="flex justify-between items-center">
@@ -757,13 +832,12 @@ export default function DashboardPage() {
                       <div className="flex gap-2">
                         <Button
                           variant="outline"
-                          onClick={() => {
-                            setCandidatePagination({
-                              ...candidatePagination,
-                              page: candidatePagination.page - 1,
-                            });
-                            fetchCandidates();
-                          }}
+                          onClick={() =>
+                            setCandidatePagination((prev) => ({
+                              ...prev,
+                              page: prev.page - 1,
+                            }))
+                          }
                           disabled={candidatePagination.page === 1}
                         >
                           Previous
@@ -774,13 +848,12 @@ export default function DashboardPage() {
                         </div>
                         <Button
                           variant="outline"
-                          onClick={() => {
-                            setCandidatePagination({
-                              ...candidatePagination,
-                              page: candidatePagination.page + 1,
-                            });
-                            fetchCandidates();
-                          }}
+                          onClick={() =>
+                            setCandidatePagination((prev) => ({
+                              ...prev,
+                              page: prev.page + 1,
+                            }))
+                          }
                           disabled={
                             candidatePagination.page === totalCandidatePages
                           }

@@ -60,69 +60,51 @@ export default function JobsPage() {
   }, []);
 
   // Fetch jobs with filters
-  useEffect(
-    () => {
-      const fetchJobs = async () => {
-        try {
-          setIsLoading(true);
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        setIsLoading(true);
 
-          // Build query parameters
-          const params = new URLSearchParams({
-            page: pagination.page.toString(),
-            limit: pagination.limit.toString(),
-          });
+        // Build query parameters
+        const params = new URLSearchParams({
+          page: pagination.page.toString(),
+          limit: pagination.limit.toString(),
+        });
 
-          if (filters.experienceLevel && filters.experienceLevel !== "any") {
-            params.append("experienceLevel", filters.experienceLevel);
-          }
-
-          if (filters.city && filters.city !== "any") {
-            params.append("city", filters.city);
-          }
-
-          if (filters.languageNames && filters.languageNames !== "any") {
-            params.append("languageNames", filters.languageNames);
-          }
-
-          const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_API_URL}/jobs?${params.toString()}`
-          );
-
-          setJobs(response.data.data || []);
-          setPagination({
-            ...pagination,
-            page: response.data.page || 1,
-            limit: response.data.limit || 10,
-            total: response.data.total || 0,
-          });
-        } catch (error) {
-          console.error("Error fetching jobs:", error);
-          // Mock data if API fails
-          setJobs([]);
-        } finally {
-          setIsLoading(false);
+        if (filters.experienceLevel && filters.experienceLevel !== "any") {
+          params.append("experienceLevel", filters.experienceLevel);
         }
-      };
 
-      fetchJobs();
-    },
-    [filters, pagination.page, pagination.limit]
-    // [filters, pagination.page, pagination.limit]
-  );
+        if (filters.city && filters.city !== "any") {
+          params.append("city", filters.city);
+        }
 
-  // Filter jobs based on search term
-  // const filteredJobs = jobs.filter((job) => {
-  //   // Search term filter
-  //   if (!searchTerm) return true;
+        if (filters.languageNames && filters.languageNames !== "any") {
+          params.append("languageNames", filters.languageNames);
+        }
 
-  //   return (
-  //     job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //     job.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //     job.languages.some((lang: any) =>
-  //       lang.name.toLowerCase().includes(searchTerm.toLowerCase())
-  //     )
-  //   );
-  // });
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/jobs?${params.toString()}`
+        );
+
+        setJobs(response.data.data || []);
+        setPagination({
+          ...pagination,
+          page: response.data.page || 1,
+          limit: response.data.limit || 10,
+          total: response.data.total || 0,
+        });
+      } catch (error) {
+        console.error("Error fetching jobs:", error);
+        // Mock data if API fails
+        setJobs([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, [filters, pagination.page, pagination.limit]);
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters({ ...filters, [key]: value });
@@ -146,19 +128,6 @@ export default function JobsPage() {
         )}
       </div>
 
-      {/* <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
-        <div className="lg:col-span-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input
-              placeholder="Search by title, description, or programming languages..."
-              className="pl-10"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-        </div>
-        <div className="flex gap-2"> */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <div className="space-y-2">
           <label className="text-sm font-medium">Experience Level</label>
