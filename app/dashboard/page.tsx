@@ -71,7 +71,7 @@ export default function DashboardPage() {
             const viewsResponse = await axios.get(
               `${process.env.NEXT_PUBLIC_API_URL}/users/views`
             );
-            setProfileViews(viewsResponse.data.count || 0);
+            setProfileViews(viewsResponse.data.data.length || 0);
           } catch (error) {
             console.error("Error fetching profile views:", error);
             // Set mock data if API fails
@@ -583,18 +583,15 @@ export default function DashboardPage() {
                             <h3 className="font-medium">{job.title}</h3>
                             <div className="flex items-center mt-1 text-sm text-muted-foreground">
                               <MapPin className="h-3 w-3 mr-1" />
-                              {job.location}
+                              {job.city}
                             </div>
                             <div className="flex items-center mt-1 text-sm text-muted-foreground">
-                              <Clock className="h-3 w-3 mr-1" />
-                              Posted {formatDate(job.postedDate)}
+                              {job.description.length > 20
+                                ? job.description.slice(0, 20) + "..."
+                                : job.description}
                             </div>
                           </div>
                           <div className="flex flex-col items-end">
-                            <div className="text-sm font-medium">
-                              {job.applicationsCount} application
-                              {job.applicationsCount !== 1 ? "s" : ""}
-                            </div>
                             <div className="flex gap-2 mt-2">
                               <Button size="sm" variant="outline" asChild>
                                 <Link href={`/jobs/${job.id}`}>View</Link>

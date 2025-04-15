@@ -86,12 +86,9 @@ export default function JobApplicationsPage() {
         await axios.post(
           `${process.env.NEXT_PUBLIC_API_URL}/applications/${applicationId}/reject`
         );
-      } else {
-        await axios.patch(
-          `${process.env.NEXT_PUBLIC_API_URL}/applications/${applicationId}`,
-          {
-            status,
-          }
+      } else if (status === "accepted") {
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/applications/${applicationId}/accept`
         );
       }
 
@@ -317,24 +314,6 @@ function ApplicationCard({
             <div className="border-t pt-4 mt-4">
               <h4 className="font-medium mb-2">Update Status</h4>
               <div className="flex flex-wrap gap-2">
-                {application.status !== "pending" && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => onStatusChange(application.id, "pending")}
-                  >
-                    Mark as Pending
-                  </Button>
-                )}
-                {application.status !== "reviewed" && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => onStatusChange(application.id, "reviewed")}
-                  >
-                    Mark as Reviewed
-                  </Button>
-                )}
                 {application.status !== "accepted" && (
                   <Button
                     size="sm"
