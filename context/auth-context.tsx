@@ -132,32 +132,48 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       toast({
         variant: "destructive",
         title: "Login Failed",
-        description: "Invalid email or password. Please try again.",
+        description: "Invalid credentials. Please try again.",
       });
-      // console.error("Login error:", error);
-      // throw error;
     }
   };
 
   // Signup function
-  const signup = async (data: SignupData) => {
+  const signup = async (signupData: SignupData) => {
     try {
       const response = await axios.post<LoginResponse>(
         `${API_URL}/auth/signup`,
-        data,
+        signupData,
         { withCredentials: true }
       );
-      const { accessToken, data: userData } = response.data;
+      const { accessToken, data } = response.data;
 
       // Save token and set default header
       localStorage.setItem("accessToken", accessToken);
       axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
 
-      setUser(userData.user);
-      return userData.user;
+      const userData = {
+        id: data.user.id,
+        name: data.user.employer?.name || data.user.employee?.name || "",
+        email: data.user.email || "",
+        nationalId: data.user.employee?.nationalId || "",
+        city: data.user.employee?.city || "",
+        bio: data.user.employee?.bio || "",
+        experienceLevel: data.user.employee?.experienceLevel || "",
+        companyName: data.user.employer?.name || "",
+        role: data.user.role || "",
+      };
+      // setUser(data.user);
+      setUser(userData);
+      // setUser(userData.user);
+      return userData;
     } catch (error) {
       console.error("Signup error:", error);
-      throw error;
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to sign up",
+      });
+      // throw error;
     }
   };
 

@@ -304,7 +304,7 @@ function ApplicationCard({
               </Button>
 
               <Button size="sm" variant="outline" asChild>
-                <Link href={`/profile/${application.employee.id}`}>
+                <Link href={`/profile/${application.employee.user.id}`}>
                   <ExternalLink className="h-4 w-4 mr-1" />
                   View Profile
                 </Link>

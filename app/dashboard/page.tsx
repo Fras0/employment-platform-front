@@ -25,6 +25,7 @@ import {
 import Link from "next/link";
 import axios from "axios";
 import { MapPin, Clock, Search } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 export default function DashboardPage() {
   const { user, isLoading, isAuthenticated } = useAuth();
@@ -63,6 +64,7 @@ export default function DashboardPage() {
 
   // Fetch programming languages
   useEffect(() => {
+    if (!user) return;
     const fetchProgrammingLanguages = async () => {
       try {
         setIsLoadingLanguages(true);
@@ -71,7 +73,13 @@ export default function DashboardPage() {
         );
         setProgrammingLanguages(response.data.data || []);
       } catch (error) {
-        console.error("Error fetching programming languages:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description:
+            "Failed to load programming languages. Please try again.",
+        });
+        // console.error("Error fetching programming languages:", error);
         // Fallback languages if API fails
         setProgrammingLanguages([]);
       } finally {
@@ -108,6 +116,7 @@ export default function DashboardPage() {
             setProfileViews(Math.floor(Math.random() * 100) + 10);
           }
         }
+        // console.log(user);
 
         if (user.role === "employee") {
           // Fetch user's applications
@@ -228,12 +237,6 @@ export default function DashboardPage() {
     }
   };
 
-  // Handle candidate filter changes
-  // const handleCandidateFilterChange = (key: string, value: string) => {
-  //   setCandidateFilters({ ...candidateFilters, [key]: value });
-  //   setCandidatePagination({ ...candidatePagination, page: 1 }); // Reset to first page when filters change
-  // };
-
   // Calculate total pages for candidates pagination
   const totalCandidatePages =
     Math.ceil(candidatePagination.total / candidatePagination.limit) || 1;
@@ -315,8 +318,8 @@ export default function DashboardPage() {
                   <Link
                     href="#"
                     onClick={(e) => {
-                      e.preventDefault(); // prevents navigation
-                      setActiveTab("profile"); // switches the tab
+                      e.preventDefault();
+                      setActiveTab("profile");
                     }}
                   >
                     View Profile
@@ -646,7 +649,7 @@ export default function DashboardPage() {
                             </div>
                             <div className="flex items-center mt-1 text-sm text-muted-foreground">
                               {job.description.length > 20
-                                ? job.description.slice(0, 20) + "..."
+                                ? job.description.slice(0, 70) + "..."
                                 : job.description}
                             </div>
                           </div>

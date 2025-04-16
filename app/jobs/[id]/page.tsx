@@ -51,13 +51,13 @@ export default function JobDetailPage() {
           }
         }
       } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to load job details. Please try again.",
+        });
         router.push("/404");
         console.error("Error fetching job details:", error);
-        // toast({
-        //   variant: "destructive",
-        //   title: "Error",
-        //   description: "Failed to load job details. Please try again.",
-        // });
       } finally {
         setIsLoading(false);
       }
