@@ -164,7 +164,13 @@ export default function DashboardPage() {
     if (activeTab === "candidates") {
       fetchCandidates();
     }
-  }, [activeTab, candidatePagination.page, candidateFilters]);
+  }, [
+    activeTab,
+    candidatePagination.page,
+    candidateFilters.city,
+    candidateFilters.experienceLevel,
+    candidateFilters.languageNames,
+  ]);
 
   // Fetch candidates when filters change or tab is selected
   const fetchCandidates = async () => {
@@ -223,10 +229,10 @@ export default function DashboardPage() {
   };
 
   // Handle candidate filter changes
-  const handleCandidateFilterChange = (key: string, value: string) => {
-    setCandidateFilters({ ...candidateFilters, [key]: value });
-    setCandidatePagination({ ...candidatePagination, page: 1 }); // Reset to first page when filters change
-  };
+  // const handleCandidateFilterChange = (key: string, value: string) => {
+  //   setCandidateFilters({ ...candidateFilters, [key]: value });
+  //   setCandidatePagination({ ...candidatePagination, page: 1 }); // Reset to first page when filters change
+  // };
 
   // Calculate total pages for candidates pagination
   const totalCandidatePages =
@@ -248,6 +254,20 @@ export default function DashboardPage() {
   if (!user) {
     return null;
   }
+
+  // Format date to relative time
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - date.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return "Today";
+    if (diffDays === 1) return "Yesterday";
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+    return `${Math.floor(diffDays / 30)} months ago`;
+  };
 
   return (
     <div className="container mx-auto py-12">
@@ -322,8 +342,14 @@ export default function DashboardPage() {
                       Active applications
                     </p>
                     <Button variant="outline" className="mt-4 w-full" asChild>
-                      <Link href="/dashboard?tab=applications">
-                        View Applications
+                      <Link
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setActiveTab("applications");
+                        }}
+                      >
+                        My applications status
                       </Link>
                     </Button>
                   </CardContent>
@@ -343,7 +369,15 @@ export default function DashboardPage() {
                       New recommendations
                     </p>
                     <Button variant="outline" className="mt-4 w-full" asChild>
-                      <Link href="/jobs">View Jobs</Link>
+                      <Link
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setActiveTab("jobs");
+                        }}
+                      >
+                        View recommendations
+                      </Link>
                     </Button>
                   </CardContent>
                 </Card>
@@ -460,11 +494,11 @@ export default function DashboardPage() {
                               {application.job.title}
                             </h3>
                             <p className="text-sm text-muted-foreground">
-                              {application.job.company}
+                              {application.job.employer.companyName}
                             </p>
                             <div className="flex items-center mt-1 text-sm text-muted-foreground">
                               <MapPin className="h-3 w-3 mr-1" />
-                              {application.job.location}
+                              {application.job.city}
                             </div>
                           </div>
                           <div className="flex flex-col items-end">

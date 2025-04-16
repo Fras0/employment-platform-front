@@ -89,11 +89,7 @@ export default function JobApplicationForm({
     try {
       // Submit application to API
       await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/applications/apply/${jobId}`,
-        {
-          coverLetter,
-          resumeUrl,
-        }
+        `${process.env.NEXT_PUBLIC_API_URL}/applications/apply/${jobId}`
       );
 
       toast({
