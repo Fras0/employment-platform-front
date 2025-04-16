@@ -106,7 +106,9 @@ export default function UserProfilePage() {
             Back to Dashboard
           </Link>
         </Button>
-        <h1 className="text-3xl font-bold mb-2">{user.name}</h1>
+        <h1 className="text-3xl font-bold mb-2">
+          {user.employee?.name || user.employer?.name}
+        </h1>
         <div className="flex items-center text-muted-foreground">
           <Mail className="mr-1 h-4 w-4" />
           {user.email}
@@ -128,21 +130,21 @@ export default function UserProfilePage() {
               <>
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4 text-muted-foreground" />
-                  <span>{user.city || "Location not specified"}</span>
+                  <span>{user.employee?.city || "Location not specified"}</span>
                 </div>
 
                 <div>
                   <h3 className="font-medium mb-2">Experience Level</h3>
                   <Badge variant="outline" className="capitalize">
-                    {user.experienceLevel || "Not specified"}
+                    {user.employee?.experienceLevel || "Not specified"}
                   </Badge>
                 </div>
 
-                {user.bio && (
+                {user.employee?.bio && (
                   <div>
                     <h3 className="font-medium mb-2">About</h3>
                     <p className="text-muted-foreground whitespace-pre-line">
-                      {user.bio}
+                      {user.employee?.bio}
                     </p>
                   </div>
                 )}

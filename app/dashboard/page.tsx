@@ -179,8 +179,6 @@ export default function DashboardPage() {
         limit: candidatePagination.limit.toString(),
       });
 
-      console.log(`${params}`);
-
       if (
         candidateFilters.experienceLevel &&
         candidateFilters.experienceLevel !== "any"
@@ -254,7 +252,7 @@ export default function DashboardPage() {
   return (
     <div className="container mx-auto py-12">
       <h1 className="text-3xl font-bold mb-8">
-        Welcome, {user.name || user.email}
+        Welcome, {user.employer?.name || user.employee?.name || user.email}
       </h1>
 
       <Tabs
@@ -275,7 +273,7 @@ export default function DashboardPage() {
           )}
           {user.role === "employer" && (
             <TabsTrigger value="candidates" onClick={fetchCandidates}>
-              Candidates
+              Explore Candidates
             </TabsTrigger>
           )}
           <TabsTrigger value="profile">Profile</TabsTrigger>

@@ -1,36 +1,36 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { useAuth } from "@/context/auth-context"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/auth-context";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Menu, X } from "lucide-react"
-import { useState } from "react"
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Menu, X } from "lucide-react";
+import { useState } from "react";
 
 export default function Header() {
-  const { user, isAuthenticated, logout } = useAuth()
-  const pathname = usePathname()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { user, isAuthenticated, logout } = useAuth();
+  const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen)
-  }
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
 
   const getInitials = (name: string) => {
     return name
       .split(" ")
       .map((n) => n[0])
       .join("")
-      .toUpperCase()
-  }
+      .toUpperCase();
+  };
 
   return (
     <header className="border-b">
@@ -46,7 +46,9 @@ export default function Header() {
           <Link
             href="/"
             className={`text-sm font-medium ${
-              pathname === "/" ? "text-primary" : "text-muted-foreground hover:text-foreground"
+              pathname === "/"
+                ? "text-primary"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             Home
@@ -55,7 +57,9 @@ export default function Header() {
             <Link
               href="/dashboard"
               className={`text-sm font-medium ${
-                pathname === "/dashboard" ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                pathname === "/dashboard"
+                  ? "text-primary"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Dashboard
@@ -64,19 +68,21 @@ export default function Header() {
           <Link
             href="/jobs"
             className={`text-sm font-medium ${
-              pathname === "/jobs" ? "text-primary" : "text-muted-foreground hover:text-foreground"
+              pathname === "/jobs"
+                ? "text-primary"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             Jobs
           </Link>
-          <Link
+          {/* <Link
             href="/about"
             className={`text-sm font-medium ${
               pathname === "/about" ? "text-primary" : "text-muted-foreground hover:text-foreground"
             }`}
           >
             About
-          </Link>
+          </Link> */}
         </nav>
 
         {/* Auth Buttons or User Menu */}
@@ -84,9 +90,14 @@ export default function Header() {
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                <Button
+                  variant="ghost"
+                  className="relative h-8 w-8 rounded-full"
+                >
                   <Avatar className="h-8 w-8">
-                    <AvatarFallback>{user?.name ? getInitials(user.name) : "U"}</AvatarFallback>
+                    <AvatarFallback>
+                      {user?.name ? getInitials(user.name) : "U"}
+                    </AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
@@ -114,8 +125,17 @@ export default function Header() {
         </div>
 
         {/* Mobile Menu Button */}
-        <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleMobileMenu}>
-          {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="md:hidden"
+          onClick={toggleMobileMenu}
+        >
+          {mobileMenuOpen ? (
+            <X className="h-6 w-6" />
+          ) : (
+            <Menu className="h-6 w-6" />
+          )}
         </Button>
       </div>
 
@@ -125,7 +145,9 @@ export default function Header() {
           <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
             <Link
               href="/"
-              className={`text-sm font-medium ${pathname === "/" ? "text-primary" : "text-muted-foreground"}`}
+              className={`text-sm font-medium ${
+                pathname === "/" ? "text-primary" : "text-muted-foreground"
+              }`}
               onClick={toggleMobileMenu}
             >
               Home
@@ -134,7 +156,9 @@ export default function Header() {
               <Link
                 href="/dashboard"
                 className={`text-sm font-medium ${
-                  pathname === "/dashboard" ? "text-primary" : "text-muted-foreground"
+                  pathname === "/dashboard"
+                    ? "text-primary"
+                    : "text-muted-foreground"
                 }`}
                 onClick={toggleMobileMenu}
               >
@@ -143,14 +167,18 @@ export default function Header() {
             )}
             <Link
               href="/jobs"
-              className={`text-sm font-medium ${pathname === "/jobs" ? "text-primary" : "text-muted-foreground"}`}
+              className={`text-sm font-medium ${
+                pathname === "/jobs" ? "text-primary" : "text-muted-foreground"
+              }`}
               onClick={toggleMobileMenu}
             >
               Jobs
             </Link>
             <Link
               href="/about"
-              className={`text-sm font-medium ${pathname === "/about" ? "text-primary" : "text-muted-foreground"}`}
+              className={`text-sm font-medium ${
+                pathname === "/about" ? "text-primary" : "text-muted-foreground"
+              }`}
               onClick={toggleMobileMenu}
             >
               About
@@ -160,13 +188,19 @@ export default function Header() {
                 <Link
                   href="/profile"
                   className={`text-sm font-medium ${
-                    pathname === "/profile" ? "text-primary" : "text-muted-foreground"
+                    pathname === "/profile"
+                      ? "text-primary"
+                      : "text-muted-foreground"
                   }`}
                   onClick={toggleMobileMenu}
                 >
                   Profile
                 </Link>
-                <Button variant="ghost" className="justify-start px-2" onClick={logout}>
+                <Button
+                  variant="ghost"
+                  className="justify-start px-2"
+                  onClick={logout}
+                >
                   Log out
                 </Button>
               </>
@@ -188,5 +222,5 @@ export default function Header() {
         </div>
       )}
     </header>
-  )
+  );
 }
