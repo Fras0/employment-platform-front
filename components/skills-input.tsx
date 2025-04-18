@@ -30,7 +30,6 @@ export default function SkillsInput({ initialSkills = [], onChange }: SkillsInpu
           setAvailableLanguages(response.data.data.map((lang: any) => lang.name))
         }
       } catch (error) {
-        console.error("Error fetching programming languages:", error)
         // Fallback languages if API fails
         setAvailableLanguages([
           "JavaScript",

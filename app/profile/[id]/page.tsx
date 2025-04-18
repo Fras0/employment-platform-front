@@ -34,7 +34,7 @@ export default function UserProfilePage() {
         );
         setUser(response.data.data);
       } catch (error) {
-        console.error("Error fetching user profile:", error);
+        // console.error("Error fetching user profile:", error);
         setError(
           "Failed to load user profile. The user may not exist or you may not have permission to view this profile."
         );

@@ -844,7 +844,7 @@ export default function DashboardPage() {
                             </div>
                             <div className="flex flex-col items-end">
                               <Button size="sm" asChild>
-                                <Link href={`/profile/${candidate.id}`}>
+                                <Link href={`/profile/${candidate.user.id}`}>
                                   View Profile
                                 </Link>
                               </Button>

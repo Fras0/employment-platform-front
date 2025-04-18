@@ -95,7 +95,7 @@ export default function JobsPage() {
           total: response.data.total || 0,
         });
       } catch (error) {
-        console.error("Error fetching jobs:", error);
+        // console.error("Error fetching jobs:", error);
         // Mock data if API fails
         setJobs([]);
       } finally {
@@ -192,7 +192,11 @@ export default function JobsPage() {
         </div>
       </div>
 
-      {isLoading ? (
+      {!user ? (<CardContent className="p-6 text-center">
+        <p className="text-muted-foreground">
+          Log in first to search for jobs.
+        </p>
+      </CardContent>) : isLoading ? (
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
             <Card key={i}>

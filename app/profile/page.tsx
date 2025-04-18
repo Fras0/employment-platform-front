@@ -247,9 +247,6 @@ export default function ProfilePage() {
                     <Label>Programming Languages & Skills</Label>
                     <SkillsInput
                       initialSkills={["JavaScript", "React"]}
-                      // onChange={(skills) =>
-
-                      // }
                     />
                     <p className="text-sm text-muted-foreground">
                       Add the programming languages and technologies you're

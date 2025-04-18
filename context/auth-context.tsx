@@ -40,7 +40,7 @@ type AuthContextType = {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<any>;
-  signup: (data: SignupData) => Promise<void>;
+  signup: (data: SignupData) => Promise<any>;
   logout: () => Promise<void>;
 };
 
@@ -122,11 +122,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         city: data.user.employee?.city || "",
         bio: data.user.employee?.bio || "",
         experienceLevel: data.user.employee?.experienceLevel || "",
-        companyName: data.user.employer?.name || "",
+        companyName: data.user.employer?.companyName || "",
         role: data.user.role || "",
       };
-      // setUser(data.user);
-      setUser(userData);
+
+      await setUser(userData);
       return userData;
     } catch (error) {
       toast({
@@ -159,12 +159,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         city: data.user.employee?.city || "",
         bio: data.user.employee?.bio || "",
         experienceLevel: data.user.employee?.experienceLevel || "",
-        companyName: data.user.employer?.name || "",
+        companyName: data.user.employer?.companyName || "",
         role: data.user.role || "",
       };
-      // setUser(data.user);
-      setUser(userData);
-      // setUser(userData.user);
+
+      await setUser(userData);
       return userData;
     } catch (error) {
       console.error("Signup error:", error);

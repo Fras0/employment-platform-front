@@ -73,12 +73,6 @@ export default function PostJobPage() {
       };
 
       await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/jobs`, jobData);
-      // await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/jobs`, {
-      //   title: formData.title,
-      //   description: formData.description,
-      //   city: formData.city,
-      //   experienceLevel: formData.experienceLevel,
-      // })
 
       toast({
         title: "Job posted successfully",
@@ -88,7 +82,8 @@ export default function PostJobPage() {
       // Redirect to jobs page after successful submission
       router.push("/dashboard");
     } catch (error) {
-      console.error("Job posting error:", error);
+      alert("Please provide all fields correctly")
+      // console.error("Job posting error:", error);
       toast({
         variant: "destructive",
         title: "Error",
