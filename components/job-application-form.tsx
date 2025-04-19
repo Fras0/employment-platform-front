@@ -27,6 +27,7 @@ export default function JobApplicationForm({
   const [resumeUrl, setResumeUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [resume, setResume] = useState<File | null>(null);
   const { toast } = useToast();
   const router = useRouter();
 
@@ -43,6 +44,7 @@ export default function JobApplicationForm({
       });
       return;
     }
+    setResume(file)
 
     try {
       setIsUploading(true);
@@ -86,10 +88,20 @@ export default function JobApplicationForm({
 
     setIsSubmitting(true);
 
+
+    const formData = new FormData();
+    if (resume instanceof File) {
+      console.log("im heeeeeere")
+      formData.append("resume", resume);
+    }
     try {
       // Submit application to API
       await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/applications/apply/${jobId}`
+        `${process.env.NEXT_PUBLIC_API_URL}/applications/apply/${jobId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }
+      }
       );
 
       toast({

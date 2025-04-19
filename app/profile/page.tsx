@@ -120,9 +120,9 @@ export default function ProfilePage() {
         <TabsList className="mb-6">
           <TabsTrigger value="info">Personal Information</TabsTrigger>
           {/* <TabsTrigger value="security">Security</TabsTrigger> */}
-          {user.role === "employee" && (
+          {/* {user.role === "employee" && (
             <TabsTrigger value="skills">Skills & Experience</TabsTrigger>
-          )}
+          )} */}
         </TabsList>
 
         <TabsContent value="info">
@@ -207,12 +207,12 @@ export default function ProfilePage() {
           <TabsContent value="skills">
             <Card>
               <form onSubmit={handleSubmit}>
-                <CardHeader>
+                {/* <CardHeader>
                   <CardTitle>Skills & Experience</CardTitle>
                   <CardDescription>
                     Update your professional information
                   </CardDescription>
-                </CardHeader>
+                </CardHeader> */}
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="experienceLevel">Experience Level</Label>
@@ -254,11 +254,11 @@ export default function ProfilePage() {
                     </p>
                   </div>
                 </CardContent>
-                <CardFooter>
+                {/* <CardFooter>
                   <Button type="submit" disabled={isUpdating}>
                     {isUpdating ? "Saving..." : "Save Changes"}
                   </Button>
-                </CardFooter>
+                </CardFooter> */}
               </form>
             </Card>
           </TabsContent>

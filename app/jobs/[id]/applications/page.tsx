@@ -234,6 +234,31 @@ interface ApplicationCardProps {
   onStatusChange: (id: string, status: string) => void;
 }
 
+const handleDownload = async (applicationId: number) => {
+  try {
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/applications/${applicationId}/downloadResume`, {
+      responseType: 'blob', // to handle the binary data (PDF)
+      withCredentials: true, // if you're using cookies or session auth
+    });
+
+    // Create a URL for the blob and trigger a download
+    const blob = response.data;
+    const url = window.URL.createObjectURL(new Blob([blob as Blob]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `resume_${applicationId}.pdf`); // Adjust filename as needed
+    document.body.appendChild(link);
+    link.click();
+
+    // Clean up the object URL after download
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error downloading the resume:", error);
+    // Handle error (e.g., show a notification to the user)
+  }
+};
+
+
 function ApplicationCard({
   application,
   onStatusChange,
@@ -261,10 +286,10 @@ function ApplicationCard({
                 application.status === "accepted"
                   ? "success"
                   : application.status === "rejected"
-                  ? "destructive"
-                  : application.status === "reviewed"
-                  ? "secondary"
-                  : "outline"
+                    ? "destructive"
+                    : application.status === "reviewed"
+                      ? "secondary"
+                      : "outline"
               }
               className="capitalize mb-2"
             >
@@ -294,9 +319,7 @@ function ApplicationCard({
             <div className="flex items-center">
               <Button size="sm" variant="outline" className="mr-2" asChild>
                 <a
-                  href={application.resumeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  onClick={() => handleDownload(application.id)}
                 >
                   <Download className="h-4 w-4 mr-1" />
                   Download Resume

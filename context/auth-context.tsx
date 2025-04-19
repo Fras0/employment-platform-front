@@ -89,7 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           });
         }
       } catch (error) {
-        console.error("Auth check error:", error);
+        // console.error("Auth check error:", error);
         localStorage.removeItem("accessToken");
         axios.defaults.headers.common["Authorization"] = "";
       } finally {
